@@ -4,7 +4,7 @@ We are using the MNIST dataset to create a neural network from scratch.
 
 ## Inputs and Outputs
 
-- Each input is a 28×28 image flattened to a vector $\mathbf{x}\in\mathbb{R}^{784}$.
+- Each input is a 28×28 image flattened to a vector $x \in \mathbb{R}^{784}$.
 - The task is to classify the image into one of 10 classes (digits 0–9).
 
 ## Network structure
@@ -13,62 +13,84 @@ We are using the MNIST dataset to create a neural network from scratch.
     1 Layer -> 10 hidden nodes
     2 Layer -> 10 output nodes
 
-## Forward Pass
+## Forward pass
 
 - Input activations:
 
-  $$\mathbf{A}^{(0)} = \mathbf{x}. $$
+$$
+A^{(0)} = x
+$$
 
 - First (hidden) linear transform and activation:
 
-  $$\mathbf{Z}_{(1)} = W_{(1)}\mathbf{A}_{(0)} + \mathbf{b}_{(1)},$$
-  $$\mathbf{A}^{(1)} = \mathrm{ReLU}(\mathbf{Z}^{(1)})$$
+$$
+Z^{(1)} = W^{(1)} A^{(0)} + b^{(1)}
+$$
 
-  applied elementwise. For a scalar $t$:
+$$
+A^{(1)} = \text{ReLU}\bigl(Z^{(1)}\bigr)
+$$
 
-  $$\mathrm{ReLU}(t) = \max(0,t) = \begin{cases} t & t\ge 0, \\
-  0 & t<0. \end{cases}$$
+applied elementwise. For a scalar $t$:
+
+$$
+\text{ReLU}(t) = \max(0,t) =
+\begin{cases}
+t & t \ge 0,\\
+0 & t < 0.
+\end{cases}
+$$
 
 - Second (output) linear transform and softmax activation:
 
-  $$\mathbf{Z}_{(2)} = W_{(2)}\mathbf{A}_{(1)} + \mathbf{b}_{(2)},$$
-  $$\mathbf{A}_{(2)} = \mathrm{softmax}(\mathbf{Z}_{(2)}).$$
+$$
+Z^{(2)} = W^{(2)} A^{(1)} + b^{(2)}
+$$
 
-  The softmax components (using sigma notation) are:
+$$
+A^{(2)} = \text{softmax}\bigl(Z^{(2)}\bigr)
+$$
 
-  $$a^{(2)}_j = \frac{e^{Z^{(2)}_j}}{\Sigma_{j=1}^{K} e^{Z^{(2)}_j}},\qquad j=1,\dots,M,$$
+The softmax components (sigma notation) are:
 
-  where for this network $M=10$. Softmax ensures $a{^j}_{(2)}>0$ and $\sum_{j} a{^j}_{(2)} = 1$.
+$$
+a^{(2)}_{j} = \frac{e^{Z^{(2)}_{j}}}{\displaystyle\sum_{k=1}^{M} e^{Z^{(2)}_{k}}}, \qquad j=1,\dots,M
+$$
+
+where for this network $M=10$. Softmax ensures.
+
+$$
+\begin{matrix}
+a^{(2)}_{j}>0 \ \ \& \ \
+\sum_{j} a^{(2)}_{j} = 1
+\end{matrix}
+$$
 
 ## Parameter shapes (explicit)
 
-- $W^{(1)}\in\mathbb{R}^{10\times 784}$, $\mathbf{b}^{(1)}\in\mathbb{R}^{10}$.
-- $W^{(2)}\in\mathbb{R}^{10\times 10}$, $\mathbf{b}^{(2)}\in\mathbb{R}^{10}$.
-e0r4
+- $W^{(1)} \in \mathbb{R}^{10\times 784}$, $b^{(1)} \in \mathbb{R}^{10}$.
+- $W^{(2)} \in \mathbb{R}^{10\times 10}$, $b^{(2)} \in \mathbb{R}^{10}$.
 
-## Backward Propagation
-Improving the weights and biases by compiling respectful error that contributed to the absolute error in the predictions.
+## Backward propagation (brief, refactored)
 
-$$\mathbf{{dZ}_{(2)}} = \mathbf{{A}_{(2)}} - Y$$
+Compute the output error and propagate it backward to form gradients. For a single example:
 
-Here Y is the actual value i.e. 
+$$
+dZ^{(2)} = A^{(2)} - Y
+$$
 
-- If actual value corresponds to be 4 it will be encoded as 
-  
-$$ Y = \begin{bmatrix} 0&0&0&0&1&0&0&0&0&0 \end{bmatrix} $$
+where $Y$ is the one-hot encoded true label (length $M$). Example for label 4:
 
-As shown the encoding uses the following code:
+$$
+Y = \begin{bmatrix}0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0\end{bmatrix}
+$$
+
+Concise one-hot creation examples:
+
 ```python
+# list comprehension
 y = 4
-Y = []
-for i in range(10):
-  if i == y:
-    Y.append(1)
-  else:
-    Y.append(0)
+Y = [1 if i == y else 0 for i in range(10)]
 ```
-The time complexity of this code will be:
-$$ \mathbb{O}\mathbf(N)$$
 
-As the code follows it is quite a bit inefficient but since this is only computed once every training it will not matter but if need be we can make it efficient we can just convert the list to a hash of predefined size and fill it up at the initialization process so we will just be having a time complexity of: $$ \mathbb{O}\mathbf(1) $$
 
