@@ -14,8 +14,8 @@ class NeuralNetwork():
         # TODO:Complete this tomorrow
 
         #Network Matrixes 
-        self.neurons = np.random.rand(*layers)
-        self.weights = self.create_weights(layers)  
+        self.neurons = np.random.randn(*layers)
+        self.weights = self.create_weights(layers)
         '''
         Weight between two layers can be represented as 2d matrix of N x M
 
@@ -27,12 +27,12 @@ class NeuralNetwork():
         of dimensions NxM and length L
         L -> no. of layers - 1
         '''
-        self.bias = [np.random.rand(layer) for layer in layers]
+        self.bias = [np.random.randn(layer) for layer in layers]
 
     def create_weights(self, layers: list|tuple) -> list[np.ndarray]:
         weight = []
         for i in range(len(layers)-1):
-            weight.append(np.random.rand(layers[i],layers[i+1]))
+            weight.append(np.random.randn(layers[i],layers[i+1]))
         return weight
 
     def soft_max(self, Z : np.ndarray ) -> np.ndarray:
