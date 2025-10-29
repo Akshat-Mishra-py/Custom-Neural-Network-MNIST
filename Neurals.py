@@ -77,7 +77,8 @@ class NeuralNetwork():
         Output layer
         '''
         for i in range(1, len(self.neurons)):
-            self.neurons[i] = self.weights[i]*self.neurons[i]+self.bias[i]
+            self.neurons[i] = self.weights[i]@self.neurons[i]+self.bias[i]
+            # TODO: Add unit tests for testing matrix multiplication and forward pass 
 
         if customfunction:
             for layer, function in activationfunction.items():
