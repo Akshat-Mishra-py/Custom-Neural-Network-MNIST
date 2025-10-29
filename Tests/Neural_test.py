@@ -7,6 +7,7 @@ sys.path.append(parent_dir)
 
 import unittest
 from Neurals import NeuralNetwork
+import numpy as np
 
 class TestNeuralClass(unittest.TestCase):
     def __init__(self, methodName = "runTest"):
@@ -26,6 +27,16 @@ class TestNeuralClass(unittest.TestCase):
         self.assertEqual(len(self.network.bias), len(self.layers))
         for i in range(len(self.layers)):
             self.assertEqual(*self.network.bias[i].shape, self.layers[i])
+    
+    def test_soft_max_algo(self):
+        soft_max = self.network.soft_max(np.array([2,2]))
+        self.assertSequenceEqual(list(soft_max), [0.5,0.5])
+    
+    def test_ReLU_algo(self):
+        ReLU = self.network.ReLU(np.array([2,3,4,-7]))
+        self.assertSequenceEqual(list(ReLU), [2,3,4,0])
+
+
 
 
 if __name__ == '__main__':
