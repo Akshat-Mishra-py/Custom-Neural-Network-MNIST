@@ -19,13 +19,13 @@ class NeuralNetwork():
         '''
         Weight between two layers can be represented as 2d matrix of N x M
 
-        >>N -> no. of neurons in first layer
-        >>M -> no. of neurons in second layer 
+        - N - number of neurons in first layer &
+        - M - number of neurons in second layer 
 
 
         So for completing the structure it will be a list of 2d matrices
-        of dimensions NxM and length L
-        L -> no. of layers - 1
+        of dimensions NxM and length
+        - L - nomber of layers - 1
         '''
         self.bias = [np.random.randn(layer) for layer in layers]
 
@@ -46,6 +46,7 @@ class NeuralNetwork():
         for i in indexes:
             Z[i] = 0
         return Z    
+
 
     def forward_pass(self, activationfunction : dict = {}, customfunction=False):
         '''
@@ -89,3 +90,33 @@ class NeuralNetwork():
             for i in range(1,len(self.neurons)-1):
                 self.neurons[i] = self.ReLU(self.neurons[i])
             self.neurons[-1] = self.soft_max(self.neurons[-1])
+
+class OneHot():
+    def __init__(self, elements: list[int|str|float]):
+        '''
+        Takes a Elements array and encodes and decodes the data 
+        respectively.
+        '''
+        self.elements= elements
+        self.dictionary = {}
+
+        size_lookup = len(self.elements)
+        for element in elements:
+            self.dictionary[element] = np.array([self.elements.index(element) == i for i in range(size_lookup)])
+    
+    def encode(self, element:int|str|float)->np.ndarray:
+        '''
+        returns encoded numpy array if element exists for one hot encoding
+        else raises KeyError.  
+        '''
+        try:
+            return self.dictionary[element]
+        except KeyError:
+            raise KeyError("Value not in elements list")
+
+    def decode(self, encoded_array:np.ndarray)->int|str|float:
+        for key, value in self.dictionary.items():
+            if np.array_equal(encoded_array, value):
+                return key
+            else:
+                raise ValueError("Invalid Encoding")

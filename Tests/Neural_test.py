@@ -6,7 +6,7 @@ parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
 sys.path.append(parent_dir)
 
 import unittest
-from Neurals import NeuralNetwork
+from Neurals import NeuralNetwork, OneHot
 import numpy as np
 
 class TestNeuralClass(unittest.TestCase):
@@ -36,6 +36,18 @@ class TestNeuralClass(unittest.TestCase):
         ReLU = self.network.ReLU(np.array([2,3,4,-7]))
         self.assertSequenceEqual(list(ReLU), [2,3,4,0])
 
+class TestOneHot(unittest.TestCase):
+    def __init__(self, methodName = "runTest"):
+        super().__init__(methodName)
+        element_table = [1,2,3,4,5,6,7,8,9]
+        self.one_hot_obj = OneHot(element_table)
+    
+    def test_encode(self):
+        self.assertSequenceEqual(list(self.one_hot_obj.encode(1)), [1,0,0,0,0,0,0,0,0]) 
+    
+    def test_decode(self):
+        encoded_table = np.array([1,0,0,0,0,0,0,0,0])
+        self.assertEqual(self.one_hot_obj.decode(encoded_table), 1)
 
 
 
